@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="所谓Onepass算法 对于这个名字大家可能很奇怪，什么是onepass算法？其实这是一类算法问题的简称，这种算法的根本目的是在O(N)的时间内解决问题，即，solve the problem in one pass. 本人对于Onepass的理解还不够深刻，所以今天仅仅是试着借助一些例子去试着谈一谈这一类有趣的算法问题。 Onepass的核心 Onepass的核心是dp，dp的核心在于cachi">
+<meta name="keywords" content="Onepass,Dynamic Programming">
+<meta property="og:type" content="article">
+<meta property="og:title" content="试谈一下Onepass算法">
+<meta property="og:url" content="https://csgentlemen.github.io/2018/12/01/试谈一下Onepass算法/index.html">
+<meta property="og:site_name" content="CS Gentlemen Club">
+<meta property="og:description" content="所谓Onepass算法 对于这个名字大家可能很奇怪，什么是onepass算法？其实这是一类算法问题的简称，这种算法的根本目的是在O(N)的时间内解决问题，即，solve the problem in one pass. 本人对于Onepass的理解还不够深刻，所以今天仅仅是试着借助一些例子去试着谈一谈这一类有趣的算法问题。 Onepass的核心 Onepass的核心是dp，dp的核心在于cachi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://csgentlemen.github.io/images/Onepass/LC84.png">
+<meta property="og:updated_time" content="2019-02-06T19:30:20.653Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="试谈一下Onepass算法">
+<meta name="twitter:description" content="所谓Onepass算法 对于这个名字大家可能很奇怪，什么是onepass算法？其实这是一类算法问题的简称，这种算法的根本目的是在O(N)的时间内解决问题，即，solve the problem in one pass. 本人对于Onepass的理解还不够深刻，所以今天仅仅是试着借助一些例子去试着谈一谈这一类有趣的算法问题。 Onepass的核心 Onepass的核心是dp，dp的核心在于cachi">
+<meta name="twitter:image" content="https://csgentlemen.github.io/images/Onepass/LC84.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://csgentlemen.github.io/2018/12/01/试谈一下Onepass算法/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>试谈一下Onepass算法 | CS Gentlemen Club</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CS Gentlemen Club</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-鉴与屑">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/likes/" rel="section"><i class="menu-item-icon fa fa-fw fa-heart"></i> <br>鉴与屑</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://csgentlemen.github.io/2018/12/01/试谈一下Onepass算法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CS Gentlemen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CS Gentlemen Club">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">试谈一下Onepass算法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-12-01 14:58:22" itemprop="dateCreated datePublished" datetime="2018-12-01T14:58:22+00:00">2018-12-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-02-06 19:30:20" itemprop="dateModified" datetime="2019-02-06T19:30:20+00:00">2019-02-06</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="所谓onepass算法">所谓Onepass算法</h3>
+<p>对于这个名字大家可能很奇怪，什么是onepass算法？其实这是一类算法问题的简称，这种算法的根本目的是在O(N)的时间内解决问题，即，<strong>solve the problem in one pass</strong>.</p>
+<p>本人对于Onepass的理解还不够深刻，所以今天仅仅是试着借助一些例子去试着谈一谈这一类有趣的算法问题。</p>
+<h3 id="onepass的核心">Onepass的核心</h3>
+<p>Onepass的核心是dp，dp的核心在于caching，在算法的进程中不断地更新储存的信息，我们叫“状态”，去结合下一时刻所遇到的信息以及更新后的状态去得到下一时刻状态——最终得到终态。而Onepass又是dp的特例，我们一般仅用O(N)或者O(1)的space去解决问题。同时，一些复杂dp的过程中可能会去追溯之前某些特定时刻的状态，但是对于onepass来说，一般只追溯之前一个时刻的状态，是一个非常轻便又巧妙的算法。</p>
+<p>空口无凭，我们先借一个小例子去认识一下onepass算法。</p>
+<a id="more"></a>
+<h3 id="引子">引子</h3>
+<h4 id="lc84">LC84</h4>
+<blockquote>
+<p>Given <em>n</em> non-negative integers representing the histogram's bar height where the width of each bar is 1, find the area of largest rectangle in the histogram.</p>
+</blockquote>
+<p><img src="/images/Onepass/LC84.png"></p>
+<p>这一道题代表一系列的题目，算法的核心在于构建一个stack，在每一个时刻都保持stack是一个我们想要的状态。对于这一题来说，我们想要这个stack里保持递增，这样遇到下一个比<code>stack[-1]</code>要小的值，我们可以依次pop出<code>stack</code>内比它大的值，来对pop出的单元格进行计算。</p>
+<p>在这一题中，我们对于每一个pop出来的值，它会与自己<strong>右边</strong>的值组成一个长方形，此时的<strong>右边</strong>是指隐形的右边，是指可能已经被pop出去的所有单元格，而它是目前为止这一时刻所有pop出去单元格的最小值，所以由它的值来决定公共矩形区域的高。</p>
+<p>需要注意的是，stack里面每一个值都可能是有隐形的左右单元格，所以当我们想要找到这一时刻的矩形宽度，我们需要找到目前的index以及pop出去之后<code>stack[-1]</code>的差值-1。一个小技巧是可以在首尾各pad一个0，这样使得所有的单元格都能在一个循环内得到处理。</p>
+<p>总结：</p>
+<p>stack中存储的是过去所有的可用信息（递增单元格），与当前的单元格高度信息结合，如果当前单元格高于stack[-1]，那么可能还会有面积更大的矩形，放入stack中。如果当前单元格低于stack[-1]，那么在这一时刻进行计算，计算目前为止的最大矩形，同时更新stack。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">largestRectangleArea</span><span class="params">(self, heights)</span>:</span></span><br><span class="line">    heights = [<span class="number">0</span>] + heights + [<span class="number">0</span>]</span><br><span class="line">    stack = []</span><br><span class="line">    _max = area = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i, height <span class="keyword">in</span> enumerate(heights):</span><br><span class="line">        <span class="keyword">while</span> stack <span class="keyword">and</span> heights[stack[<span class="number">-1</span>]] &gt; height:</span><br><span class="line">            temp = stack.pop()</span><br><span class="line">            area = (i - stack[<span class="number">-1</span>] - <span class="number">1</span>) * heights[temp]</span><br><span class="line">            _max = max(_max, area)</span><br><span class="line">    	stack.append(i)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> _max</span><br></pre></td></tr></table></figure>
+<h4 id="lc862">LC862</h4>
+<blockquote>
+<p>Return the <strong>length</strong> of the shortest, non-empty, contiguous subarray of <code>A</code> with sum at least <code>K</code>.</p>
+<p>If there is no non-empty subarray with sum at least <code>K</code>, return <code>-1</code>.</p>
+</blockquote>
+<p>该题其实需要一个用<code>presum</code>做预处理的过程，把subarray的和问题转化成两点之间的差值问题。如果题意改为<code>subarray with sum equals to K</code>，那么其实就是一个<code>two sum</code>的问题。但是题意是要求是一个大于<code>K</code>的范围，那么显然是一个dp的问题。</p>
+<p>本题该怎么样用Onepass来做呢，首先我们要考虑的是，我们需要存储的状态是什么？显然，是到目前为止<code>有意义</code>的起始点，那么一旦<code>当前值</code>减去<code>起始点</code>的值大于<code>K</code>，那么就是一个符合要求的<code>subarray</code>，我们只需要找到每个这样的subarray然后计算长度即可。</p>
+<p>那么什么样的起始点是有意义的呢？很容易可以想到，假设当前起始点的值是<code>x</code>，如果遇到下一个值<code>大于x</code>，不影响之后subarray的结果。但是如果遇到一个值<code>小于x</code>，假设为<code>x-1</code>那么我们可以理解为，<code>x-1</code>比<code>x</code>距离符合要求更近，这时候x就不再是一个潜在的可能结果，因为即便之后出现了<code>x+k</code>这样的值，由于<code>x-1</code>距离<code>x+k</code>比<code>x</code>距离<code>x+k</code>更近，所以x永远不可能是一个最小值。因此我们需要更新起始点，使得我们存储的值是递增的。</p>
+<p>什么样的数据结构符合要求呢，显然是deque，不断pop右边使得该deque递增，遇到合格的值就popleft找到合格的subarray长度。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shortestSubarray</span><span class="params">(self, A, K)</span>:</span></span><br><span class="line">    N = len(A)</span><br><span class="line">    P = [<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> A:</span><br><span class="line">        P.append(P[<span class="number">-1</span>] + x)</span><br><span class="line">        ans = N + <span class="number">1</span></span><br><span class="line">        state = collections.deque() </span><br><span class="line">        <span class="keyword">for</span> i, num <span class="keyword">in</span> enumerate(P):</span><br><span class="line">            <span class="keyword">while</span> state <span class="keyword">and</span> num &lt;= P[state[<span class="number">-1</span>]]:</span><br><span class="line">                state.pop()</span><br><span class="line">            <span class="keyword">while</span> state <span class="keyword">and</span> num - P[state[<span class="number">0</span>]] &gt;= K:</span><br><span class="line">                ans = min(ans, i - state.popleft())</span><br><span class="line"></span><br><span class="line">            state.append(i)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ans <span class="keyword">if</span> ans &lt; N + <span class="number">1</span> <span class="keyword">else</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Onepass/" rel="tag"># Onepass</a>
+          
+            <a href="/tags/Dynamic-Programming/" rel="tag"># Dynamic Programming</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/16/DP-solution-for-TSP-Problems/" rel="next" title="DP solution for TSP Problems">
+                <i class="fa fa-chevron-left"></i> DP solution for TSP Problems
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">CS Gentlemen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#所谓onepass算法"><span class="nav-number">1.</span> <span class="nav-text">所谓Onepass算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#onepass的核心"><span class="nav-number">2.</span> <span class="nav-text">Onepass的核心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引子"><span class="nav-number">3.</span> <span class="nav-text">引子</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lc84"><span class="nav-number">3.1.</span> <span class="nav-text">LC84</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lc862"><span class="nav-number">3.2.</span> <span class="nav-text">LC862</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CS Gentlemen</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<style>
+.MathJax_Display {
+    overflow: auto hidden;
+}
+</style><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
